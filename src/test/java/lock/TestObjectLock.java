@@ -29,23 +29,22 @@ public class TestObjectLock {
 		private Object cur;
 		@Override
 		public void run() {
-			synchronized (cur) {
-				synchronized (pre) {
-					try {
-						for(int i=0;i<10;i++) {
+			for(int i=0;i<10;i++) {
+				synchronized (cur) {
+					synchronized (pre) {
+						try {
 							System.out.println(Thread.currentThread().getName());
 							pre.notify();
 							System.out.println("-----");
+						} catch (Exception e) {
+							e.printStackTrace();
 						}
-					} catch (Exception e) {
+					}
+					try {
+						cur.wait();
+					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					
-				}
-				try {
-					cur.wait();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
 				}
 			}
 		}
